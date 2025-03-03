@@ -1,0 +1,4 @@
+start with llm caller setting up API calls with
+OLLAMA  ( testing with a docker image)
+LITELLAMA
+OPENAI NOT SUPPORTED
