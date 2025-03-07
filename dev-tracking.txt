@@ -2,3 +2,5 @@ start with llm caller setting up API calls with
 OLLAMA  ( testing with a docker image)
 LITELLAMA
 OPENAI NOT SUPPORTED
+running tests command : 
+poetry run pytest tests/[file_name].py -v
