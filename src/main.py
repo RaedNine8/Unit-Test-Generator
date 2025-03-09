@@ -6,12 +6,16 @@ from typing import Optional, Tuple
 from llm_handler.AICaller import AICaller
 from config.Runner import Runner
 
-def main():
-    aiCaller = AICaller( model="deepseek-r1:671b",
-                    api_base = "http://localhost:11434",
-                    enable_retry = False
-    )
-    aiCaller.call_model()
+##exemple of a simple command to use as a reference 
+#U-GEN \
+  #--source-file-path "app.go" \
+  #--test-file-path "app_test.go" \
+  #--code-coverage-report-path "coverage.xml" \
+  #--test-command "go test -coverprofile=coverage.out && gocov convert coverage.out | gocov-xml > coverage.xml" \
+  #--test-command-dir $(pwd) \
+  #--coverage-type "cobertura" \
+  #--desired-coverage 70 \
+  #--max-iterations 1
 
 
 class TestGenerator:
