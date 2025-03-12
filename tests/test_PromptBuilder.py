@@ -85,13 +85,20 @@ class TestPromptBuilder:
 
     def test_file_reading_error(self):
         """Test handling of non-existent files"""
-        with pytest.raises(Exception):
+        test_dir = tempfile.gettempdir()
+        nonexistent_source = os.path.join(test_dir, "nonexistent.py")
+        nonexistent_test = os.path.join(test_dir, "nonexistent_test.py")
+        nonexistent_coverage = os.path.join(test_dir, "nonexistent_coverage.xml")
+
+        with pytest.raises(FileNotFoundError) as exc_info:
             PromptBuilder(
-                source_file_path="nonexistent.py",
-                test_file_path="nonexistent_test.py",
-                code_coverage_report="coverage.xml",
-                project_root="/"
-            )
+                source_file_path=nonexistent_source,
+                test_file_path=nonexistent_test,
+                code_coverage_report=nonexistent_coverage,
+                project_root=test_dir
+        
+        assert nonexistent_source in str(exc_info.value) or \
+               nonexistent_test in str(exc_info.value)
 
     def test_relative_paths(self, temp_files):
         """Test relative path handling"""
