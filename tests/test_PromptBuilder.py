@@ -88,17 +88,23 @@ class TestPromptBuilder:
         test_dir = tempfile.gettempdir()
         nonexistent_source = os.path.join(test_dir, "nonexistent.py")
         nonexistent_test = os.path.join(test_dir, "nonexistent_test.py")
-        nonexistent_coverage = os.path.join(test_dir, "nonexistent_coverage.xml")
-
-        with pytest.raises(FileNotFoundError) as exc_info:
+        
+        # Create empty coverage report to focus on source/test files
+        coverage_path = os.path.join(test_dir, "coverage.xml")
+        with open(coverage_path, "w") as f:
+            f.write("")
+        
+        try:
             PromptBuilder(
                 source_file_path=nonexistent_source,
                 test_file_path=nonexistent_test,
-                code_coverage_report=nonexistent_coverage,
+                code_coverage_report=coverage_path,
                 project_root=test_dir
-        
-        assert nonexistent_source in str(exc_info.value) or \
-               nonexistent_test in str(exc_info.value)
+            )
+            pytest.fail("Expected FileNotFoundError was not raised")
+        except Exception as e:
+            assert isinstance(e, (FileNotFoundError, IOError))
+            assert any(path in str(e) for path in [nonexistent_source, nonexistent_test])
 
     def test_relative_paths(self, temp_files):
         """Test relative path handling"""
