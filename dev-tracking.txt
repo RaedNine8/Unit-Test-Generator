@@ -10,3 +10,5 @@ poetry run pytest tests/[file_name].py -v
 ###
 main class is filled with code for testing the functionnality of the AICALLER  with comands and seeing the response 
 isntall the deepseek model first !!!!
+"important" !!! 
+check the chat to test with a executable exemple 
