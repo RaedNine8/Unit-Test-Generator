@@ -52,3 +52,63 @@ def run_test_iteration(
     
     return exit_code == 0, stdout, stderr
 
+def main():
+    args = parse_args()
+    
+    # Initialize components
+    prompt_builder = PromptBuilder(
+        source_file_path=args.source_file_path,
+        test_file_path=args.test_file_path,
+        code_coverage_report=args.code_coverage_report_path or "",
+        included_files=args.included_files or "",
+        project_root=args.project_root
+    )
+    
+    ai_caller = AICaller(
+        model=get_settings().get("llm.model", "deepseek-coder"),
+        api_base=get_settings().get("llm.api_base", "http://localhost:11434"),
+        enable_retry=True
+    )
+    
+    runner = Runner()
+    
+    current_coverage = 0.0
+    iteration = 0
+    
+    while current_coverage < args.desired_coverage and iteration < args.max_iterations:
+        print(f"\nIteration {iteration + 1}/{args.max_iterations}")
+        
+        success, stdout, stderr = run_test_iteration(
+            prompt_builder=prompt_builder,
+            ai_caller=ai_caller,
+            runner=runner,
+            test_command=args.test_command,
+            test_dir=args.test_command_dir
+        )
+        
+        if not success:
+            print(f"Test run failed:\nstdout:{stdout}\nstderr:{stderr}")
+            prompt_builder.failed_test_runs += f"\nIteration {iteration + 1} failed:\n{stderr}"
+        
+        # Update coverage if report exists
+        if args.code_coverage_report_path:
+            try:
+                with open(args.code_coverage_report_path, 'r') as f:
+                    # Simple coverage parsing - adapt based on coverage format
+                    current_coverage = float(f.read().strip())
+            except Exception as e:
+                print(f"Error reading coverage report: {e}")
+        
+        iteration += 1
+        
+        print(f"Current coverage: {current_coverage}%")
+    
+    if current_coverage >= args.desired_coverage:
+        print(f"Success! Achieved {current_coverage}% coverage")
+        return 0
+    else:
+        print(f"Failed to achieve desired coverage. Current: {current_coverage}%")
+        return 1
+
+if __name__ == "__main__":
+    sys.exit(main())
