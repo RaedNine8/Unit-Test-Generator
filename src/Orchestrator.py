@@ -65,7 +65,7 @@ def main():
     )
     
     ai_caller = AICaller(
-        model=get_settings().get("llm.model", "deepseek-coder"),
+        model=get_settings().get("llm.model", "deepseek-r1:8b"),
         api_base=get_settings().get("llm.api_base", "http://localhost:11434"),
         enable_retry=True
     )
