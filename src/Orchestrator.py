@@ -3,8 +3,10 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-from llm_handler.PromptBuilder import PromptBuilder
-from llm_handler.AICaller import AICaller
+sys.path.append(str(Path(__file__).parent.parent))
+
+from src.llm_handler.PromptBuilder import PromptBuilder
+from src.llm_handler.AICaller import AICaller
 from config.Runner import Runner
 from config.settings.config_factory import get_settings
 
