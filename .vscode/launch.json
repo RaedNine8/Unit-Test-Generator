@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: U-Gen CLI",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/Orchestrator.py",
+            "args": [
+                "--source-file-path", "tests/test_samples/sample.py",
+                "--test-file-path", "tests/test_samples/test_sample.py",
+                "--project-root", "${workspaceFolder}",
+                "--code-coverage-report-path", "coverage.xml",
+                "--test-command", "pytest",
+                "--desired-coverage", "80",
+                "--max-iterations", "3"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
