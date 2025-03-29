@@ -5,8 +5,8 @@ from typing import Optional
 
 sys.path.append(str(Path(__file__).parent.parent))
 
-from src.llm_handler.PromptBuilder import PromptBuilder
-from src.llm_handler.AICaller import AICaller
+from src.llm_handler.prompt_builder import PromptBuilder
+from src.llm_handler.ai_caller import AICaller
 from config.Runner import Runner
 from config.settings.config_factory import get_settings
 

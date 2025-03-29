@@ -3,7 +3,7 @@ import os
 
 from jinja2 import Environment, StrictUndefined
 
-from llm_handler.AICaller import AICaller
+from src.llm_handler.ai_caller import AICaller
 from config.settings.config_factory import get_settings
 
 
