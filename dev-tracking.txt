@@ -1,3 +1,5 @@
+Try using Neo4J instead of the SQLite database here
+
 start with llm caller setting up API calls with
 OLLAMA  ( testing with a docker image)
 OPENAI NOT SUPPORTED
