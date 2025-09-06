@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 from ai_caller import AICaller
 from unit_test_generator import UnitTestGenerator
-from runner import TestRunner
+from runner import Runner
 from app.database import initialize_database
 
 def setup_logger(log_level="INFO", log_file=None):
@@ -86,7 +86,7 @@ def main():
         )
         
         # Initialize test runner
-        test_runner = TestRunner(
+        test_runner = Runner(
             test_command=args.test_command,
             test_command_dir=args.test_command_dir
         )

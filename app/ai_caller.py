@@ -4,7 +4,7 @@ import time
 from typing import Dict, Tuple
 
 class AICaller:
-    """A simple Ollama-only AI caller supporting streaming and non-streaming."""
+    """Ollama-only AI caller supporting streaming and non-streaming."""
     def __init__(self, model: str = "codellama", api_base: str = "http://localhost:11434"):
         self.model = model
         self.api_base = api_base.rstrip("/")
@@ -27,10 +27,6 @@ class AICaller:
             raise
 
     def call(self, prompt: Dict[str, str], stream: bool = False, max_tokens: int = 2048, temperature: float = 0.2) -> Tuple[str, int, int]:
-        """
-        Calls the Ollama API with the given prompt.
-        Returns: (response_text, prompt_tokens, completion_tokens)
-        """
         if not all(k in prompt for k in ["system", "user"]):
             raise KeyError("Prompt must contain 'system' and 'user' keys")
         message = f"{prompt['system']}\n\n{prompt['user']}" if prompt['system'] else prompt['user']
@@ -76,5 +72,4 @@ class AICaller:
         return content, prompt_tokens, completion_tokens
 
     def _count_tokens(self, text: str) -> int:
-        """Approximate token count: 4 chars per token."""
         return max(1, len(text) // 4)

@@ -1,51 +1,32 @@
-
-import logging
 import subprocess
-import os
-from pathlib import Path
+import time
 
-class TestRunner:
-    """Handles running tests and processing results"""
+class Runner:
+    @staticmethod
+    def run_command(command: str, max_run_time_sec: int, cwd: str = None):
+        """
+        Executes a shell command in a specified working directory and returns its output, error, and exit code.
 
-    def __init__(self, test_command, test_command_dir):
-        self.test_command = test_command
-        self.test_command_dir = test_command_dir
-        self.logger = logging.getLogger(__name__)
+        Parameters:
+            command (str): The shell command to execute.
+            max_run_time_sec (int): Maximum allowed runtime in seconds before timeout.
+            cwd (str, optional): The working directory in which to execute the command. Defaults to None.
 
-    def run_tests(self):
-        """Run the test command and capture output"""
-        self.logger.info(f"Running tests with command: '{self.test_command}' in '{self.test_command_dir}'")
+        Returns:
+            tuple: A tuple containing the standard output ('stdout'), standard error ('stderr'), exit code ('exit_code'),
+                   and the time of the executed command ('command_start_time').
+        """
+        command_start_time = int(time.time() * 1000)  # Get the current time in milliseconds
+
         try:
-            process = subprocess.run(
-                self.test_command,
+            result = subprocess.run(
+                command,
                 shell=True,
-                capture_output=True,
+                cwd=cwd,
                 text=True,
-                cwd=self.test_command_dir,
-                check=False  # Don't raise exception on non-zero exit code
+                capture_output=True,
+                timeout=max_run_time_sec,
             )
-            
-            stdout = process.stdout
-            stderr = process.stderr
-            exit_code = process.returncode
-            
-            if exit_code != 0:
-                self.logger.warning(f"Test command exited with code {exit_code}")
-                self.logger.debug(f"STDOUT:\n{stdout}")
-                self.logger.debug(f"STDERR:\n{stderr}")
-            else:
-                self.logger.info("Test command executed successfully.")
-            
-            return {
-                "success": exit_code == 0,
-                "exit_code": exit_code,
-                "stdout": stdout,
-                "stderr": stderr
-            }
-            
-        except FileNotFoundError:
-            self.logger.error(f"Test command not found: '{self.test_command.split()[0]}'")
-            return {"success": False, "exit_code": -1, "stdout": "", "stderr": "Command not found"}
-        except Exception as e:
-            self.logger.error(f"Error running test command: {e}", exc_info=True)
-            return {"success": False, "exit_code": -1, "stdout": "", "stderr": str(e)}
+            return result.stdout, result.stderr, result.returncode, command_start_time
+        except subprocess.TimeoutExpired:
+            return "", "Command timed out", -1, command_start_time

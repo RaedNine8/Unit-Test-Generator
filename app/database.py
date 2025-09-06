@@ -3,12 +3,10 @@ import psycopg2
 from dotenv import load_dotenv
 import logging
 
-load_dotenv() # Load environment variables from .env file
-
+load_dotenv()
 logger = logging.getLogger(__name__)
 
 def get_db_connection():
-    """Establishes a connection to the PostgreSQL database."""
     try:
         conn = psycopg2.connect(
             host=os.getenv("DB_HOSTNAME"),
@@ -21,17 +19,13 @@ def get_db_connection():
         return conn
     except psycopg2.OperationalError as e:
         logger.error(f"Could not connect to the PostgreSQL database: {e}")
-        # Depending on the application's needs, you might want to raise the exception
-        # or handle it in a different way.
         raise
 
 def initialize_database():
-    """Initializes the database by creating necessary tables if they don't exist."""
     conn = get_db_connection()
     if conn:
         try:
             cur = conn.cursor()
-            # Example table creation. Adjust this to your needs.
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS test_runs (
                     id SERIAL PRIMARY KEY,
@@ -49,7 +43,6 @@ def initialize_database():
             logger.error(f"Error initializing database: {e}")
 
 def log_test_run(source_file, tests_generated, tests_passed):
-    """Log a test run to the database."""
     try:
         conn = get_db_connection()
         cur = conn.cursor()
